@@ -4,7 +4,9 @@ import { Metadata } from 'next';
 const prisma = new PrismaClient();
 
 type Props = {
-  params: { slug: string };
+  params: {
+    slug: string;
+  };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -15,9 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PostPage({ params }: Props) {
-  const { slug } = params;
-
-  const post = await prisma.post.findUnique({ where: { slug } });
+  const post = await prisma.post.findUnique({ where: { slug: params.slug } });
 
   if (!post) return <div>Post not found</div>;
 
