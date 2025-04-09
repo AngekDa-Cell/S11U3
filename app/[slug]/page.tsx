@@ -3,7 +3,6 @@
 import { PrismaClient } from '@prisma/client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-
 const prisma = new PrismaClient();
 
 // Generación de metadatos, asegurándonos de que el tipo de los parámetros sea correcto
@@ -20,11 +19,8 @@ export async function generateMetadata({
 }
 
 // Asegúrate de que la definición de props sea compatible con Next.js
-export default async function Page({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// No necesitas importar tipos adicionales
+export default async function Page({ params }: { params: { slug: string } }) {
   const post = await prisma.post.findUnique({ where: { slug: params.slug } });
 
   if (!post) return notFound(); // mejor UX
@@ -39,4 +35,3 @@ export default async function Page({
     </article>
   );
 }
-
