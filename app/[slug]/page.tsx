@@ -1,25 +1,33 @@
+// app/[slug]/page.tsx
+
 import { PrismaClient } from '@prisma/client';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
-type Props = {
-  params: {
-    slug: string;
-  };
-};
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}): Promise<Metadata> {
   const post = await prisma.post.findUnique({ where: { slug: params.slug } });
+
+  if (!post) return { title: 'Post not found' };
+
   return {
-    title: post?.title || 'Post not found',
+    title: post.title,
   };
 }
 
-export default async function PostPage({ params }: Props) {
+export default async function Page({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = await prisma.post.findUnique({ where: { slug: params.slug } });
 
-  if (!post) return <div>Post not found</div>;
+  if (!post) return notFound(); // si tienes una página app/not-found.tsx
 
   return (
     <article className="max-w-3xl mx-auto p-4">
