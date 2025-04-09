@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
+// 👇 sin tipo personalizado
 export async function generateMetadata({
   params,
 }: {
@@ -15,11 +16,10 @@ export async function generateMetadata({
 
   if (!post) return { title: 'Post not found' };
 
-  return {
-    title: post.title,
-  };
+  return { title: post.title };
 }
 
+// 👇 sin tipo Props
 export default async function Page({
   params,
 }: {
@@ -27,7 +27,7 @@ export default async function Page({
 }) {
   const post = await prisma.post.findUnique({ where: { slug: params.slug } });
 
-  if (!post) return notFound(); // si tienes una página app/not-found.tsx
+  if (!post) return notFound(); // mejor UX
 
   return (
     <article className="max-w-3xl mx-auto p-4">
