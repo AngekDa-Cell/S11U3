@@ -1,15 +1,4 @@
-import type { NextConfig } from "next";
-
-// next.config.ts
-const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  images: {
-    domains: ["localhost"],
-  }
-};
+import { nextConfig } from "./lib/utils";
 
 export default nextConfig;
 
