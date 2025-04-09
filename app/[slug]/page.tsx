@@ -1,18 +1,28 @@
 import { PrismaClient } from '@prisma/client';
+import { Metadata } from 'next';
 
 const prisma = new PrismaClient();
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-  // Desestructuramos params sin usar await, ya que params no es una promesa
+interface PostPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+export async function generateMetadata({ params }: PostPageProps): Promise<Metadata> {
+  const post = await prisma.post.findUnique({ where: { slug: params.slug } });
+  return {
+    title: post?.title || 'Post not found',
+  };
+}
+
+export default async function PostPage({ params }: PostPageProps) {
   const { slug } = params;
 
-  // Buscamos el post usando el slug
   const post = await prisma.post.findUnique({ where: { slug } });
 
-  // Si no encontramos el post, mostramos un mensaje
   if (!post) return <div>Post not found</div>;
 
-  // Renderizamos el contenido del post
   return (
     <article className="max-w-3xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
