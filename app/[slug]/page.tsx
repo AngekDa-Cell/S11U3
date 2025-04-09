@@ -5,16 +5,18 @@ import { notFound } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
+// Generación de metadatos: sin anotar explícitamente el tipo de los parámetros
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const post = await prisma.post.findUnique({
-    where: { slug: params.slug },
-  });
+  const { slug } = params;
+  const post = await prisma.post.findUnique({ where: { slug } });
   if (!post) return { title: 'Post not found' };
   return { title: post.title };
 }
 
+// Componente de la página sin anotar manualmente "PageProps"
 export default async function Page({ params }: { params: { slug: string } }) {
-  const post = await prisma.post.findUnique({ where: { slug: params.slug } });
+  const { slug } = params;
+  const post = await prisma.post.findUnique({ where: { slug } });
   if (!post) return notFound();
   return (
     <article className="max-w-3xl mx-auto p-4">
@@ -26,4 +28,3 @@ export default async function Page({ params }: { params: { slug: string } }) {
     </article>
   );
 }
-
