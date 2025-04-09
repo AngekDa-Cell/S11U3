@@ -1,30 +1,27 @@
-// app/[slug]/page.tsx
-
 import { PrismaClient } from '@prisma/client';
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { GetServerSideProps } from 'next';
+
 const prisma = new PrismaClient();
 
-// Generación de metadatos, asegurándonos de que el tipo de los parámetros sea correcto
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}): Promise<Metadata> {
-  const post = await prisma.post.findUnique({ where: { slug: params.slug } });
+type PostProps = {
+  post: { title: string; content: string; createdAt: Date };
+};
 
-  if (!post) return { title: 'Post not found' };
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const post = await prisma.post.findUnique({
+    where: { slug: params?.slug as string },
+  });
 
-  return { title: post.title };
-}
+  if (!post) {
+    return { notFound: true };
+  }
 
-// Asegúrate de que la definición de props sea compatible con Next.js
-// No necesitas importar tipos adicionales
-export default async function Page({ params }: { params: { slug: string } }) {
-  const post = await prisma.post.findUnique({ where: { slug: params.slug } });
+  return {
+    props: { post },
+  };
+};
 
-  if (!post) return notFound(); // mejor UX
-
+const Page = ({ post }: PostProps) => {
   return (
     <article className="max-w-3xl mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
@@ -34,4 +31,6 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </div>
     </article>
   );
-}
+};
+
+export default Page;
