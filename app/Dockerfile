@@ -1,22 +1,23 @@
-# Usa una imagen base de Node.js
-FROM node:16
+# Establece la imagen base
+FROM node:18-alpine
 
-# Establece el directorio de trabajo en el contenedor
+# Establece el directorio de trabajo
 WORKDIR /app
 
-# Copia los archivos del proyecto al contenedor
-COPY . .
+# Copia los archivos de la aplicación
+COPY package*.json ./
 
-# Instala las dependencias de la aplicación
+# Instala las dependencias
 RUN npm install
 
-# Habilita el caché para .next y node_modules para optimizar la construcción en futuras ejecuciones
-RUN --mount=type=cache,id=s/2d3deff7-5ad0-4947-8505-2fff4b814211-next/cache,target=/app/.next/cache \
-    --mount=type=cache,id=s/2d3deff7-5ad0-4947-8505-2fff4b814211-node_modules/cache,target=/app/node_modules/.cache \
-    npm run build
+# Copia el resto de los archivos del proyecto
+COPY . .
 
-# Expón el puerto en el que se ejecutará la aplicación
+# Construye el proyecto
+RUN npm run build
+
+# Expon el puerto en el que se ejecutará la aplicación
 EXPOSE 3000
 
-# Comando para ejecutar la aplicación cuando se inicie el contenedor
+# Ejecuta la aplicación
 CMD ["npm", "start"]

@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
-// 📝 Cambiar el tipo de los parámetros
+// Generación de metadatos, asegurándonos de que el tipo de los parámetros sea correcto
 export async function generateMetadata({
   params,
 }: {
@@ -19,15 +19,15 @@ export async function generateMetadata({
   return { title: post.title };
 }
 
-// 📝 Cambiar el tipo de Props
-interface PageProps {
+// Asegúrate de que la definición de props sea compatible con Next.js
+export default async function Page({
+  params,
+}: {
   params: { slug: string };
-}
-
-export default async function Page({ params }: PageProps) {
+}) {
   const post = await prisma.post.findUnique({ where: { slug: params.slug } });
 
-  if (!post) return notFound(); // Mejor UX
+  if (!post) return notFound(); // mejor UX
 
   return (
     <article className="max-w-3xl mx-auto p-4">
@@ -39,3 +39,4 @@ export default async function Page({ params }: PageProps) {
     </article>
   );
 }
+
