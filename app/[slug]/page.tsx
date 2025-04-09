@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 
 const prisma = new PrismaClient();
 
-// 👇 sin tipo personalizado
+// 📝 Cambiar el tipo de los parámetros
 export async function generateMetadata({
   params,
 }: {
@@ -19,15 +19,15 @@ export async function generateMetadata({
   return { title: post.title };
 }
 
-// 👇 sin tipo Props
-export default async function Page({
-  params,
-}: {
+// 📝 Cambiar el tipo de Props
+interface PageProps {
   params: { slug: string };
-}) {
+}
+
+export default async function Page({ params }: PageProps) {
   const post = await prisma.post.findUnique({ where: { slug: params.slug } });
 
-  if (!post) return notFound(); // mejor UX
+  if (!post) return notFound(); // Mejor UX
 
   return (
     <article className="max-w-3xl mx-auto p-4">
